@@ -63,9 +63,16 @@ def validate_line(line):
 def main():
     validate_line(LINE)
     out_path = resolve_output_path()
+    out_dir = os.path.dirname(out_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(LINE)
     os.chmod(out_path, 0o644)
+    with open(out_path, "r", encoding="utf-8") as f:
+        written = f.read()
+    assert written == LINE, "read-back mismatch: output differs from LINE"
+    assert len(written) == 149, "read-back length mismatch: %d != 149" % len(written)
     return out_path
 
 
